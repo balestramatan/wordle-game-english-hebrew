@@ -1,3 +1,20 @@
+/* Key animation */
+@keyframes keyMoveUp {
+  0% {
+      transform: translateY(0);
+  }
+  50% {
+      transform: translateY(-3px); /* Move up slightly */
+  }
+  100% {
+      transform: translateY(0); /* Return to original position */
+  }
+}
+
+.hg-button:hover {
+  animation: keyMoveUp 0.5s ease-in-out !important;
+}
+
 .board {
   display: flex;
   justify-content: center;
@@ -28,27 +45,130 @@
   align-items: center;
 }
 
+.keyboard-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 5vh;
+  width: 60%;
+}
+
 @media screen and (max-width: 768px) {
   .tile {
     width: 40px; /* Adjusted width for mobile */
     height: 40px; /* Adjusted height for mobile */
     font-size: 20px; /* Adjusted font size for mobile */
   }
+
+  .keyboard-container {
+    width: 100%;
+  }
 }
 
-.keyboard-container {
-  margin-top: 5vh;
-  width: 90%;
-}
-
-.correct {
-  background-color: #538D4E;
+.incorrect {
+  background-color: #3A3A3B;
 }
 
 .close {
   background-color: #B59F3A;
 }
 
-.incorrect {
-  background-color: #3A3A3B;
+.correct {
+  background-color: #538D4E;
+}
+
+.hg-guesses {
+  background-color: #3A3A3B !important; /* Highlight color for guessed letters */
+  color: white;
+}
+
+.hg-close {
+  background-color: #B59F3A !important;
+  color: white;
+}
+
+.hg-correct {
+  background-color: #538D4E !important;
+  color: white;
+}
+
+.enter-highlight {
+  background-color: #6b8da8 !important; /* Highlight color for guessed letters */
+  color: white;
+}
+
+.ln-highlight {
+  background-color: #829db1 !important; /* Highlight color for guessed letters */
+  color: white;
+}
+
+
+.simple-keyboard.hg-theme-default.myTheme {
+  border-radius: 15px;
+  background-color: #121214;
+}
+
+
+/* Info Container */
+/* Info icon container */
+.info-container {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+/* Info icon */
+.info-icon {
+  font-size: 24px;
+  color: #ffffff;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s ease;
+}
+
+.info-icon:hover {
+  background-color: #555555;
+}
+
+/* Popup styling */
+.info-popup {
+  display: none;
+  position: absolute;
+  top: 50px;
+  left: 0;
+  width: 300px;
+  background-color: #f9f9f9;
+  border: 1px solid #cccccc;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: #333333;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.info-container:hover .info-popup {
+  display: block;
+}
+
+/* Color indicators */
+.green {
+  color: #538d4e;
+  font-weight: bold;
+}
+
+.yellow {
+  color: #b59f3a;
+  font-weight: bold;
+}
+
+.gray {
+  color: #3a3a3b;
+  font-weight: bold;
 }

@@ -3,6 +3,7 @@ import LocalStorage from './utils/localStorage';
 import Line from './components/Line';
 import MyKeyboard from './components/Keyboard';
 import { hebrewWords } from './utils/hebrewWords'
+import InfoPopup from './components/InfoPopup';
 
 import './App.css';
 
@@ -32,7 +33,6 @@ function App() {
     setHebrewSolution(hebrewWord);
   };
 
-  // Fetch a new word based on language
   const getSolutionWord = async (lang) => {
     if (lang === 'english') {
       const response = await fetch(API_URL);
@@ -83,7 +83,7 @@ function App() {
       return;
     }
 
-    if (currentGuess.length > 5) return;
+    if (currentGuess.length >= 5) return;
 
     const isLetter = button.match(/^[a-zא-ת]{1}/); // Accept both English and Hebrew letters
     isLetter && setCurrentGuess(currentGuess + button);
@@ -167,6 +167,8 @@ function App() {
 
   return (
     <div className="board">
+      <InfoPopup />
+      
       <p>Guess The Word</p>
       <div className={language === 'hebrew' ? 'hebrew-tiles-container' : ''}>
         {guesses.map((guess, i) => {
@@ -183,7 +185,14 @@ function App() {
       </div>
 
       <div className="keyboard-container">
-        <MyKeyboard handleKeyboardType={handleMyKeyboardType} changeLanguage={changeLanguage} language={language} />
+        <MyKeyboard 
+          handleKeyboardType={handleMyKeyboardType} 
+          changeLanguage={changeLanguage} 
+          language={language} 
+          guesses={guesses} 
+          solution={language === 'english' ? englishSolution : hebrewSolution} 
+        />
+
       </div>
 
       {isGameOver && (

@@ -2,7 +2,9 @@ import React from 'react';
 import Keyboard from 'react-simple-keyboard';
 import 'react-simple-keyboard/build/css/index.css';
 
-const MyKeyboard = ({ handleKeyboardType, changeLanguage, language }) => {
+import '../App.css';
+
+const MyKeyboard = ({ handleKeyboardType, changeLanguage, language, guesses, solution }) => {
     const onKeyPress = (button) => {
         if (button === '{cl}') {
             changeLanguage()
@@ -36,12 +38,67 @@ const MyKeyboard = ({ handleKeyboardType, changeLanguage, language }) => {
         "{cl}": language === 'english' ? 'Change Language' : "החלף שפה"
     }
 
+    const guessedLettersSet = new Set();
+    const correctLettersSet = new Set();
+    const closeLettersSet = new Set();
+
+    guesses
+        .filter((guess) => guess !== null) // Remove null guesses
+        .forEach((guess) => {
+            const solutionCopy = solution.split(''); // Copy of the solution for comparison
+            guess.split('').forEach((letter, index) => {
+                guessedLettersSet.add(letter);
+                if (letter === solution[index]) {
+                    // Letter is in the correct position
+                    correctLettersSet.add(letter);
+                    solutionCopy[index] = null; // Mark as used in solution copy
+                }
+            });
+
+            // Find letters that exist in the solution but are in the wrong position
+            guess.split('').forEach((letter, index) => {
+                if (solutionCopy.includes(letter) && letter !== solution[index]) {
+                    closeLettersSet.add(letter);
+                    // Remove the first occurrence of this letter from the solution copy
+                    solutionCopy[solutionCopy.indexOf(letter)] = null;
+                }
+            });
+        });
+
+    // Convert the Set to a space-separated string for buttonTheme
+    const guessedLetters = Array.from(guessedLettersSet).join(' ');
+    const correctLetters = Array.from(correctLettersSet).join(' ');
+    const closeLetters = Array.from(closeLettersSet).join(' ');
+
     return (
         <Keyboard
             layout={language === 'english' ? englishLayout : hebrewLayout}
             display={display}
             layoutName={'default'}
+            theme={"hg-theme-default myTheme"}
             onKeyPress={onKeyPress}
+            buttonTheme={[
+                {
+                  class: "enter-highlight",
+                  buttons: '{enter}'
+                },
+                {
+                  class: "ln-highlight",
+                  buttons: '{cl}'
+                },
+                {
+                    class: "hg-correct",
+                    buttons: correctLetters
+                },
+                {
+                    class: "hg-close",
+                    buttons: closeLetters
+                },
+                {
+                  class: "hg-guesses",
+                  buttons: guessedLetters
+                },
+            ]}
         />
     );
 }
