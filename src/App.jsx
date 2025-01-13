@@ -45,10 +45,8 @@ function App() {
   };
 
   const finishGame = () => {
-    // LocalStorage.save('isGameOver', true);
     alert('You Won!');
-    resetGame();
-    fetchSolutions();
+    setIsGameOver(true);
   }
 
   const checkIfCurrentGuess = () => {
@@ -60,16 +58,16 @@ function App() {
     setCurrentGuess('');
 
     const isCorrect = englishSolution === currentGuess || hebrewSolution === currentGuess;
-    if (isCorrect) finishGame();
+    if (isCorrect) {
+      finishGame();
+      return;
+    }
 
     // Check if all guesses are used
     const allGuessesUsed = newGuesses.filter((guess) => guess !== null).length === 6;
     if (allGuessesUsed) {
       setIsGameOver(true);
-      // LocalStorage.save('isGameOver', true);
-      // LocalStorage.save('guesses', newGuesses);
       alert(`Game Over! The solution was ${language === 'english' ? englishSolution : hebrewSolution}`);
-      resetGame();
     }
   };
 
@@ -103,7 +101,6 @@ function App() {
   };
 
   const resetGame = () => {
-    // Reset the game state
     setGuesses(Array(6).fill(null));
     setCurrentGuess('');
     fetchSolutions();
@@ -112,14 +109,6 @@ function App() {
 
   // Use Effect for fetching new words
   useEffect(() => {
-    // const isGameOver = LocalStorage.load('isGameOver');
-    // if (isGameOver) {
-    //   const isGameOver = LocalStorage.load('isGameOver');
-    //   setIsGameOver(isGameOver);
-    //   const guesses = LocalStorage.load('guesses');
-    //   setGuesses(guesses);
-    // }
-    
     const savedEnglishSolution = LocalStorage.load('english_Solution');
     const savedHebrewSolution = LocalStorage.load('hebrew_Solution');
     const lastUpdated = LocalStorage.load('lastUpdated');
@@ -230,7 +219,7 @@ function App() {
       {isGameOver && (
         <div>
           <p>{`Number Of Guesses: ${guesses.filter((guess) => guess !== null).length}`}</p>
-          <button onClick={() => window.location.reload()}>Click To Start A New Game</button>
+          <button onClick={() => resetGame()}>Click To Start A New Game</button>
         </div>
       )}
     </div>
