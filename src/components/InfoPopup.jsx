@@ -2,10 +2,11 @@ import React from 'react';
 import '../App.css';
 
 const InfoPopup = () => {
-  
+
   return (
     <div className="info-container">
       <div className="info-icon">ℹ️</div>
+
       <div className="info-popup">
         <h3>How to Play Wordle</h3>
         <ol>
@@ -20,7 +21,7 @@ const InfoPopup = () => {
           </li>
           <li>Use the feedback to refine your guesses and find the word!</li>
         </ol>
-        <p>Good luck and have fun!</p>
+        <h3 style={{color: 'black', textAlign: 'center', marginTop: 20}}>Good luck and have fun!</h3>
       </div>
     </div>
   );

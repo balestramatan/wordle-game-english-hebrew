@@ -106,12 +106,10 @@
   color: white;
 }
 
-
 .simple-keyboard.hg-theme-default.myTheme {
   border-radius: 15px;
   background-color: #121214;
 }
-
 
 /* Info Container */
 /* Info icon container */
@@ -120,33 +118,20 @@
   top: 10px;
   left: 10px;
   cursor: pointer;
-  z-index: 1000;
 }
 
 /* Info icon */
 .info-icon {
-  font-size: 24px;
-  color: #ffffff;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.2s ease;
-}
-
-.info-icon:hover {
-  background-color: #555555;
 }
 
 /* Popup styling */
 .info-popup {
-  display: none;
   position: absolute;
   top: 50px;
-  left: 0;
+  left: 20px;
   width: 300px;
   background-color: #f9f9f9;
   border: 1px solid #cccccc;
@@ -156,10 +141,17 @@
   color: #333333;
   font-size: 14px;
   line-height: 1.6;
+
+  opacity: 0; /* Start hidden */
+  visibility: hidden; /* Ensure it's not interactive when hidden */
+  transform: translateY(-10px); /* Slightly move up initially */
+  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
 }
 
 .info-container:hover .info-popup {
-  display: block;
+  opacity: 1; /* Fade in */
+  visibility: visible; /* Make it visible */
+  transform: translateY(0); /* Slide into position */
 }
 
 /* Color indicators */
