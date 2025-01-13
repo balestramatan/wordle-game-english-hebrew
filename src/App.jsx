@@ -19,6 +19,7 @@ function App() {
   const [guesses, setGuesses] = useState(Array(6).fill(null));
   const [currentGuess, setCurrentGuess] = useState('');
   const [isGameOver, setIsGameOver] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(60);
 
   const fetchSolutions = async () => {
     const englishWord = await getSolutionWord('english');
@@ -66,7 +67,7 @@ function App() {
       setIsGameOver(true);
       // LocalStorage.save('isGameOver', true);
       // LocalStorage.save('guesses', newGuesses);
-      alert(`Game Over!`);
+      alert(`Game Over! The solution was ${language === 'english' ? englishSolution : hebrewSolution}`);
     }
   };
 
@@ -102,6 +103,7 @@ function App() {
     setIsGameOver(false);
   };
 
+  // Use Effect for fetching new words
   useEffect(() => {
     // const isGameOver = LocalStorage.load('isGameOver');
     // if (isGameOver) {
@@ -117,6 +119,11 @@ function App() {
 
     const now = Date.now();
 
+    const elapsedTime = Math.floor((now - lastUpdated) / 1000);
+    let initialTimeLeft = 60 - elapsedTime;
+
+    setTimeLeft(initialTimeLeft);
+
     if (
       savedEnglishSolution &&
       savedHebrewSolution &&
@@ -130,8 +137,22 @@ function App() {
       // Fetch new solutions if the time has passed
       fetchSolutions();
     }
+
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 1) {
+          // Fetch new words when timer hits 0
+          fetchSolutions();
+          return 60; // Reset the timer
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
   }, [language]);
 
+  // Use Effect for handling typing
   useEffect(() => {
     if (isGameOver) return;
 
@@ -168,9 +189,13 @@ function App() {
   return (
     <div className="board">
       <InfoPopup />
+
+      <div className="timer">
+        <span style={{ color: 'white'}}>New word in: {timeLeft}s</span>
+      </div>
       
       <p>Guess The Word</p>
-      <div className={language === 'hebrew' ? 'hebrew-tiles-container' : ''}>
+      <div className={`lines ${language === 'hebrew' ? 'hebrew-tiles-container' : ''}`}>
         {guesses.map((guess, i) => {
           const isCurrentGuess = i === guesses.findIndex((val) => val === null);
           return (
