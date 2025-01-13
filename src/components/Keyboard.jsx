@@ -70,6 +70,37 @@ const MyKeyboard = ({ handleKeyboardType, changeLanguage, language, guesses, sol
     const correctLetters = Array.from(correctLettersSet).join(' ');
     const closeLetters = Array.from(closeLettersSet).join(' ');
 
+    const buttonThemes = [
+        {
+          class: "enter-highlight",
+          buttons: '{enter}'
+        },
+        {
+          class: "ln-highlight",
+          buttons: '{cl}'
+        },
+    ]
+
+    const dynamicButtonThemes = [
+        {
+            class: "hg-correct",
+            buttons: correctLetters
+        },
+        {
+            class: "hg-close",
+            buttons: closeLetters
+        },
+        {
+            class: "hg-guesses",
+            buttons: guessedLetters
+        },
+    ];
+
+    const filteredThemes = [
+        ...buttonThemes,
+        ...dynamicButtonThemes.filter(theme => theme.buttons && theme.buttons.trim() !== '')
+    ];
+
     return (
         <Keyboard
             layout={language === 'english' ? englishLayout : hebrewLayout}
@@ -77,28 +108,7 @@ const MyKeyboard = ({ handleKeyboardType, changeLanguage, language, guesses, sol
             layoutName={'default'}
             theme={"hg-theme-default myTheme"}
             onKeyPress={onKeyPress}
-            buttonTheme={[
-                {
-                  class: "enter-highlight",
-                  buttons: '{enter}'
-                },
-                {
-                  class: "ln-highlight",
-                  buttons: '{cl}'
-                },
-                {
-                    class: "hg-correct",
-                    buttons: correctLetters
-                },
-                {
-                    class: "hg-close",
-                    buttons: closeLetters
-                },
-                {
-                  class: "hg-guesses",
-                  buttons: guessedLetters
-                },
-            ]}
+            buttonTheme={filteredThemes}
         />
     );
 }
