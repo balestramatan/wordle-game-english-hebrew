@@ -46,8 +46,9 @@ function App() {
 
   const finishGame = () => {
     // LocalStorage.save('isGameOver', true);
-    setIsGameOver(true);
     alert('You Won!');
+    resetGame();
+    fetchSolutions();
   }
 
   const checkIfCurrentGuess = () => {
@@ -68,6 +69,7 @@ function App() {
       // LocalStorage.save('isGameOver', true);
       // LocalStorage.save('guesses', newGuesses);
       alert(`Game Over! The solution was ${language === 'english' ? englishSolution : hebrewSolution}`);
+      resetGame();
     }
   };
 
@@ -97,11 +99,16 @@ function App() {
       setLanguage('hebrew')
     } else setLanguage('english')
 
+    resetGame();
+  };
+
+  const resetGame = () => {
     // Reset the game state
     setGuesses(Array(6).fill(null));
     setCurrentGuess('');
+    fetchSolutions();
     setIsGameOver(false);
-  };
+  }
 
   // Use Effect for fetching new words
   useEffect(() => {
