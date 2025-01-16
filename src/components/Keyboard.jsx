@@ -4,7 +4,7 @@ import 'react-simple-keyboard/build/css/index.css';
 
 import '../App.css';
 
-const MyKeyboard = ({ handleKeyboardType, changeLanguage, language, guesses, solution }) => {
+const MyKeyboard = React.memo(({ handleKeyboardType, changeLanguage, language, guesses, solution }) => {
     const onKeyPress = (button) => {
         if (button === '{cl}') {
             changeLanguage()
@@ -102,15 +102,17 @@ const MyKeyboard = ({ handleKeyboardType, changeLanguage, language, guesses, sol
     ];
 
     return (
-        <Keyboard
-            layout={language === 'english' ? englishLayout : hebrewLayout}
-            display={display}
-            layoutName={'default'}
-            theme={"hg-theme-default myTheme"}
-            onKeyPress={onKeyPress}
-            buttonTheme={filteredThemes}
-        />
+        <div className="keyboard-container">
+            <Keyboard
+                layout={language === 'english' ? englishLayout : hebrewLayout}
+                display={display}
+                layoutName={'default'}
+                theme={"hg-theme-default myTheme"}
+                onKeyPress={onKeyPress}
+                buttonTheme={filteredThemes}
+            />
+        </div>
     );
-}
+});
 
 export default MyKeyboard;

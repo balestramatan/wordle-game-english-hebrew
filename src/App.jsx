@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import LocalStorage from './utils/localStorage';
 import Line from './components/Line';
 import MyKeyboard from './components/Keyboard';
@@ -6,6 +6,7 @@ import { hebrewWords } from './utils/hebrewWords'
 import InfoPopup from './components/InfoPopup';
 
 import './App.css';
+import TimeLeft from './components/TimeLeft';
 
 const API_URL = 'https://random-word-api.herokuapp.com/word?length=5';
 
@@ -19,7 +20,7 @@ function App() {
   const [guesses, setGuesses] = useState(Array(6).fill(null));
   const [currentGuess, setCurrentGuess] = useState('');
   const [isGameOver, setIsGameOver] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(60);
+  
 
   const fetchSolutions = async () => {
     const englishWord = await getSolutionWord('english');
@@ -107,18 +108,13 @@ function App() {
     setIsGameOver(false);
   }
 
-  // Use Effect for fetching new words
+  // Fetching new words
   useEffect(() => {
     const savedEnglishSolution = LocalStorage.load('english_Solution');
     const savedHebrewSolution = LocalStorage.load('hebrew_Solution');
     const lastUpdated = LocalStorage.load('lastUpdated');
 
     const now = Date.now();
-
-    const elapsedTime = Math.floor((now - lastUpdated) / 1000);
-    let initialTimeLeft = 60 - elapsedTime;
-
-    setTimeLeft(initialTimeLeft);
 
     if (
       savedEnglishSolution &&
@@ -134,21 +130,9 @@ function App() {
       fetchSolutions();
     }
 
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime <= 1) {
-          // Fetch new words when timer hits 0
-          fetchSolutions();
-          return 60; // Reset the timer
-        }
-        return prevTime - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
   }, [language]);
 
-  // Use Effect for handling typing
+  // Handling typing
   useEffect(() => {
     if (isGameOver) return;
 
@@ -182,15 +166,16 @@ function App() {
     return () => window.removeEventListener('keydown', handleType);
   }, [currentGuess, isGameOver, englishSolution, hebrewSolution, language]);
 
+  const solution = useMemo(() => (language === 'english' ? englishSolution : hebrewSolution), [language]);
+
   return (
     <div className="board">
       <InfoPopup />
 
-      <div className="timer">
-        <span style={{ color: 'white'}}>New word in: {timeLeft}s</span>
-      </div>
+      <TimeLeft fetchSolutions={fetchSolutions} />
       
-      <p>Guess The Word</p>
+      <p>{`${language === 'english' ? 'Guess The Word' : 'נחש את המילה'}`}</p>
+
       <div className={`lines ${language === 'hebrew' ? 'hebrew-tiles-container' : ''}`}>
         {guesses.map((guess, i) => {
           const isCurrentGuess = i === guesses.findIndex((val) => val === null);
@@ -199,22 +184,19 @@ function App() {
               key={i}
               guess={isCurrentGuess ? currentGuess : guess ?? ''}
               isFinal={!isCurrentGuess && guess != null}
-              solution={language === 'english' ? englishSolution : hebrewSolution}
+              solution={solution}
             />
           );
         })}
       </div>
 
-      <div className="keyboard-container">
-        <MyKeyboard 
-          handleKeyboardType={handleMyKeyboardType} 
-          changeLanguage={changeLanguage} 
-          language={language} 
-          guesses={guesses} 
-          solution={language === 'english' ? englishSolution : hebrewSolution} 
-        />
-
-      </div>
+      <MyKeyboard 
+        handleKeyboardType={handleMyKeyboardType} 
+        changeLanguage={changeLanguage} 
+        language={language} 
+        guesses={guesses} 
+        solution={language === 'english' ? englishSolution : hebrewSolution} 
+      />
 
       {isGameOver && (
         <div>

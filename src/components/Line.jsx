@@ -1,6 +1,8 @@
+import React from 'react';
+
 const WORD_LENGTH = 5;
 
-const Line = ({ guess, isFinal, solution }) => {
+const Line = React.memo(({ guess, isFinal, solution }) => {
   const tiles = [];
   
   if (isFinal) {
@@ -56,6 +58,6 @@ const Line = ({ guess, isFinal, solution }) => {
   }
 
   return <div className="line">{tiles}</div>;
-};
+});
 
 export default Line;
